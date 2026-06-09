@@ -1,0 +1,335 @@
+[
+    {
+        "id": "5b26a23d.a8a06c",
+        "type": "tab",
+        "label": "LoRaWAN-Modbus",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "b4bb1a5f3bc0b8fa",
+        "type": "group",
+        "z": "5b26a23d.a8a06c",
+        "name": "Modbus Read",
+        "style": {
+            "label": true,
+            "color": "#000000",
+            "label-position": "n"
+        },
+        "nodes": [
+            "5d569041.3b246",
+            "60c1ec4c.275374",
+            "ce8f3e1696ccf944"
+        ],
+        "x": 294,
+        "y": 279,
+        "w": 652,
+        "h": 82
+    },
+    {
+        "id": "82b5da62ca97bfb3",
+        "type": "group",
+        "z": "5b26a23d.a8a06c",
+        "name": "Modbus Write",
+        "style": {
+            "label": true,
+            "label-position": "n",
+            "color": "#000000"
+        },
+        "nodes": [
+            "a9827b67c85d0b04",
+            "f13bf107ef80dfd2",
+            "53cf1654410c7cfe",
+            "c1ce40537f2167b6",
+            "4bd596bf3248d454",
+            "03e5faa2cb0b8c7e"
+        ],
+        "x": 94,
+        "y": 39,
+        "w": 872,
+        "h": 202
+    },
+    {
+        "id": "5d569041.3b246",
+        "type": "inject",
+        "z": "5b26a23d.a8a06c",
+        "g": "b4bb1a5f3bc0b8fa",
+        "name": "Lauch read",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 400,
+        "y": 320,
+        "wires": [
+            [
+                "60c1ec4c.275374"
+            ]
+        ]
+    },
+    {
+        "id": "f13bf107ef80dfd2",
+        "type": "function",
+        "z": "5b26a23d.a8a06c",
+        "g": "82b5da62ca97bfb3",
+        "name": "configuration",
+        "func": "let values = [];\n\n// For TTN-TTS\n//values = [msg.payload.uplink_message.decoded_payload.valveSetpoint, msg.payload.uplink_message.decoded_payload.valveTemperature];\n\n// For Chirpstack \n//values = [msg.payload.object.valveSetpoint, msg.payload.object.valveTemperature];\n\n// For testing\nvalues = [21, 22];\n\nmsg.payload = { 'value': values, 'fc': 16, 'unitid': 1, 'address': 0, 'quantity': 2 }\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 140,
+        "wires": [
+            [
+                "a9827b67c85d0b04"
+            ]
+        ]
+    },
+    {
+        "id": "53cf1654410c7cfe",
+        "type": "debug",
+        "z": "5b26a23d.a8a06c",
+        "g": "82b5da62ca97bfb3",
+        "name": "Debug write",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "c1ce40537f2167b6",
+        "type": "debug",
+        "z": "5b26a23d.a8a06c",
+        "g": "82b5da62ca97bfb3",
+        "name": "Debug MQTT",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "4bd596bf3248d454",
+        "type": "mqtt in",
+        "z": "5b26a23d.a8a06c",
+        "g": "82b5da62ca97bfb3",
+        "name": "MQTT Subscriber",
+        "topic": "v3/usmb-sandbox@ttn/devices/test-sylvain/up",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "914dac3cf2194eb6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "c1ce40537f2167b6",
+                "f13bf107ef80dfd2"
+            ]
+        ],
+        "info": "\r\n# MQTT Subscriber node\r\n\r\n - How to configure this node\r\n    -\r\n    The configuration off this node depend of which LNS or MQTT broker you use.\r\n\r\n    - For The Things Network\r\n        - \r\n        With **TTN LNS** you have to use the following topic :\r\n            ***`v3/{application_id}@ttn/devices/+/up`*** \\\r\n        Replace `{application_id}` by your application id in TTN.\\\r\n         And don't forget the `@ttn`\r\n    - For The Things Stack\r\n        - \r\n        With **TTS LNS** you have to use the following topic :\r\n            ***`v3/{application_id}/devices/+/up`*** \\\r\n        Replace `{application_id}` by your application id in TTS.\r\n\r\n    - For Chirpstack\r\n        - \r\n        With **Chirpstack LNS** you have to use the following topic :\r\n            ***`application/{application_id}/device/+/event/up`*** \\\r\n        Replace `{application_id}` by your application id (it's the number, not the name !).\r\n    - For Actility\r\n        - \r\n        if you use **Actility LNS** see the [documentation](https://docs.thingpark.com/thingpark-x/latest/Connector/BROKER_MQTT/) for using actillity broker\r\n\r\n        - For actility-USMB Broker : ***`univ-smb/devices/+/uplink`***\r\n        - For HiveMQ Broker : ***`mqtt/things/+/uplink`***\r\n        \r\n    - For other LNS or MQTT broker\r\n        - \r\n        If you use any other LNS or MQTT broker please refer to their documentation to configure this MQTT node."
+    },
+    {
+        "id": "ce8f3e1696ccf944",
+        "type": "debug",
+        "z": "5b26a23d.a8a06c",
+        "g": "b4bb1a5f3bc0b8fa",
+        "name": "Debug read",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "60c1ec4c.275374",
+        "type": "modbus-getter",
+        "z": "5b26a23d.a8a06c",
+        "g": "b4bb1a5f3bc0b8fa",
+        "name": "Modbus client Read",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "0",
+        "quantity": "2",
+        "server": "1ff5566e73e13189",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "enableDeformedMessages": false,
+        "startDelayTime": "",
+        "x": 620,
+        "y": 320,
+        "wires": [
+            [
+                "ce8f3e1696ccf944"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "a9827b67c85d0b04",
+        "type": "modbus-flex-write",
+        "z": "5b26a23d.a8a06c",
+        "g": "82b5da62ca97bfb3",
+        "name": "Modbus client Write",
+        "showStatusActivities": true,
+        "showErrors": true,
+        "showWarnings": true,
+        "server": "1ff5566e73e13189",
+        "emptyMsgOnFail": true,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 630,
+        "y": 140,
+        "wires": [
+            [
+                "53cf1654410c7cfe"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "03e5faa2cb0b8c7e",
+        "type": "inject",
+        "z": "5b26a23d.a8a06c",
+        "g": "82b5da62ca97bfb3",
+        "name": "Test",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 210,
+        "y": 200,
+        "wires": [
+            [
+                "f13bf107ef80dfd2"
+            ]
+        ]
+    },
+    {
+        "id": "914dac3cf2194eb6",
+        "type": "mqtt-broker",
+        "name": "The Things Network",
+        "broker": "eu1.cloud.thethings.network",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1ff5566e73e13189",
+        "type": "modbus-client",
+        "name": "Modbus Server (Automate)",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": true,
+        "queueLogEnabled": true,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.1.109",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyS1",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": 9600,
+        "serialDatabits": 8,
+        "serialStopbits": 1,
+        "serialParity": "none",
+        "serialConnectionDelay": 100,
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 2000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true,
+        "showErrors": true,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "edc2f6940fc52a9a",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-modbus": "5.45.2"
+        }
+    }
+]
