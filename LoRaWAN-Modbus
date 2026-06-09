@@ -85,7 +85,7 @@
         "z": "5b26a23d.a8a06c",
         "g": "82b5da62ca97bfb3",
         "name": "configuration",
-        "func": "let values = [];\n\n// For TTN-TTS\n//values = [msg.payload.uplink_message.decoded_payload.valveSetpoint, msg.payload.uplink_message.decoded_payload.valveTemperature];\n\n// For Chirpstack \n//values = [msg.payload.object.valveSetpoint, msg.payload.object.valveTemperature];\n\n// For testing\nvalues = [21, 22];\n\nmsg.payload = { 'value': values, 'fc': 16, 'unitid': 1, 'address': 0, 'quantity': 2 }\n\nreturn msg;",
+        "func": "let values = [];\n\n// For TTN-TTS\n//values = [msg.payload.uplink_message.decoded_payload.valveTemperature, msg.payload.uplink_message.decoded_payload.valveSetpoint];\n\n// For Chirpstack \n//values = [msg.payload.object.valveTemperature, msg.payload.object.valveSetpoint];\n\n// For testing\nvalues = [21, 22];\n\nmsg.payload = { 'value': values, 'fc': 16, 'unitid': 1, 'address': 0, 'quantity': 2 }\n\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -325,7 +325,7 @@
         "showLogs": true
     },
     {
-        "id": "edc2f6940fc52a9a",
+        "id": "c6b43764f4bc8a56",
         "type": "global-config",
         "env": [],
         "modules": {
